@@ -20,7 +20,7 @@ build:
     - chmod +x build/_install/etc/init.d/rcS
     - mknod build/_install/dev/console c 5 1
     - mknod build/_install/dev/loop0 b 7 0
-    - cd build/_install && find . | cpio -o -c -R root:root | gzip -9 > ../initrd.img
+    - cd build/_install && find . | cpio -o --format=newc -R root:root | gzip -9 > ../initrd.img
     - cd .. && rm -rf _install
   artifacts:
     paths:
