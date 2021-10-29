@@ -1,0 +1,13 @@
+build/
+out/
+*.sw*
+*.o
+*.sym*
+*.elf
+*.cmd*
+*.mod*
+*.ko
+*.order
+tmp
+tags
+__pycache__
