@@ -1,0 +1,15 @@
+#!/bin/bash -eux
+mkdir -p build/_install/dev build/_install/etc/init.d build/_install/home build/_install/lib/firmware build/_install/lib/modules build/_install/mnt/p0 build/_install/mnt/p1 build/_install/mnt/p2 build/_install/proc build/_install/root build/_install/sys build/_install/tmp
+ln -sf bin/busybox build/_install/init
+echo "mount -v -t devtmpfs dev /dev" > build/_install/etc/init.d/rcS
+echo "mount -v -t proc  proc /proc" >> build/_install/etc/init.d/rcS
+echo "mount -v -t sysfs sys  /sys" >> build/_install/etc/init.d/rcS
+echo "mount -v -t tmpfs tmp /tmp" >> build/_install/etc/init.d/rcS
+echo "mount -v -t debugfs none /sys/kernel/debug" >> build/_install/etc/init.d/rcS
+chmod +x build/_install/etc/init.d/rcS
+echo "root:5h5gl94ZPpzLg:0:0:root user,,,:/root:/bin/sh" > build/_install/etc/passwd
+touch build/_install/etc/group
+sudo mknod build/_install/dev/console c 5 1
+sudo mknod build/_install/dev/loop0 b 7 0
+cd build/_install && find . | cpio -o --format=newc -R root:root | gzip -9 > ../initrd.img
+

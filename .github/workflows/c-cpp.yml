@@ -1,0 +1,32 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      run: ./configure
+    - name: builddir
+      run: mkdir -p build
+    - name: defconfig
+      run: make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=build defconfig
+    - name: config
+      run: sed -i 's/# CONFIG_STATIC is not set/CONFIG_STATIC=y/g' build/.config
+    - name: make
+      run: make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=build install
+    - name: initrd
+      run: ./mkinitrd
+    - name: artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: initrd.img
+        path: build/initrd.img
